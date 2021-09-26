@@ -16,7 +16,8 @@ class GalleryRepositoryImpl @Inject constructor(
         return VK.executeSync(
             PhotosService().photosGet(
                 ownerId = UserId(GROUP_ID),
-                albumId = ALBUM_ID
+                albumId = ALBUM_ID,
+                photoSizes = true
             )
         ).items
     }

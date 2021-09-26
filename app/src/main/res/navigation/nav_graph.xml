@@ -9,4 +9,21 @@
         android:id="@+id/login_fragment"
         android:name="com.pikalov.compose.ui.login.LoginFragment">
     </fragment>
+    <fragment
+        android:id="@+id/gallery_fragment"
+        android:name="com.pikalov.compose.ui.gallery.GalleryFragment">
+        <action
+            android:id="@+id/gallery_fragment_to_image_detail_fragment"
+            app:destination="@+id/image_detail_fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/image_detail_fragment"
+        android:name="com.pikalov.compose.ui.imageDetail.ImageDetailFragment">
+        <argument
+            android:name="currentPhoto"
+            app:argType="com.pikalov.compose.features.Photo" />
+        <argument
+            android:name="otherPhotos"
+            app:argType="com.pikalov.compose.features.Photos" />
+    </fragment>
 </navigation>

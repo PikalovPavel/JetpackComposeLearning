@@ -1,7 +1,6 @@
 package com.pikalov.compose.ui.login
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -11,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pikalov.compose.R
@@ -24,7 +22,7 @@ fun LoginContent(onLoginClick: () -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(64.dp))
         Text(
-            text = stringResource(id = R.string.login_title),
+            text = stringResource(id = R.string.app_title),
             style = MaterialTheme.typography.h1,
             modifier = Modifier
                 .padding(24.dp)
