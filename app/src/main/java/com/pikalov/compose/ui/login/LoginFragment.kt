@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.pikalov.compose.R
 import com.pikalov.compose.ui.theme.JetpackComposeLearningTheme
 import com.vk.api.sdk.VK
@@ -14,6 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
+    val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +33,7 @@ class LoginFragment : Fragment() {
             setContent {
                 JetpackComposeLearningTheme {
                     LoginContent {
-                        VK.login(requireActivity(), arrayListOf(VKScope.WALL, VKScope.PHOTOS))
+                        loginViewModel.getPhotos()
                     }
                 }
             }
