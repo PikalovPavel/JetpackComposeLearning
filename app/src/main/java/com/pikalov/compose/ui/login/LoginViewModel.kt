@@ -14,26 +14,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    val authRepository: AuthRepository,
-    val galleryRepository: GalleryRepository
+    private val authRepository: AuthRepository,
 ): ViewModel() {
 
+    val authState = authRepository.authState
 
     fun login(activity: Activity) {
         authRepository.login(activity)
     }
-    fun getPhotos() {
-        Timber.tag("kek").i("called")
-        if (VK.isLoggedIn()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                runCatching {
-                    galleryRepository.getAlbums()
-                }.onSuccess {
-                    Timber.tag("kek").i(it.joinToString())
-                }.onFailure {
-                    Timber.tag("kek").wtf(it)
-                }
-            }
-        }
-    }
+
+
 }

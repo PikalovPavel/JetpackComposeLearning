@@ -3,4 +3,6 @@
     <string name="login">Вход через VK</string>
     <string name="app_title">Mobile Up Gallery</string>
     <string name="logout">Выход</string>
+    <string name="error">Что-то пошло не так, попробуйте еще раз</string>
+    <string name="success">Успешно</string>
 </resources>

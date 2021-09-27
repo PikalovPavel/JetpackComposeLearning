@@ -61,6 +61,7 @@ class GalleryFragment : Fragment() {
                                         style = MaterialTheme.typography.body2,
                                         onClick = {
                                             galleryViewModel.logout()
+                                            navigateSafe(GalleryFragmentDirections.globalToLogin())
                                         }
                                     )
                                 },

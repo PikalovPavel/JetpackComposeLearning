@@ -1,5 +1,6 @@
 package com.pikalov.compose.ui.gallery
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -9,13 +10,13 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberImagePainter
-import com.pikalov.compose.ui.theme.JetpackComposeLearningTheme
 import com.pikalov.compose.util.Result
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.pikalov.compose.features.Photo
+import com.pikalov.compose.ui.theme.toast
 
 @Composable
 @ExperimentalFoundationApi
@@ -24,7 +25,7 @@ fun GalleryContent(
     onClickListener: (photo: Photo) -> Unit
 ) {
     when (state) {
-        is Result.Error -> CircularProgressIndicator()
+        is Result.Error -> toast(LocalContext.current).show()
         Result.Loading -> CircularProgressIndicator()
         is Result.Success -> GalleryContentLoaded(state.data.photos, onClickListener)
     }

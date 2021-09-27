@@ -11,14 +11,21 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.pikalov.compose.features.AuthRepository
 import com.pikalov.compose.ui.login.LoginViewModel
+import com.pikalov.compose.ui.login.NavigateToContent
+import com.pikalov.compose.ui.theme.toast
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.exceptions.VKAuthException
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -39,13 +46,11 @@ class MainActivity : AppCompatActivity() {
                 when(it) {
                     MainViewModel.Navigate.IDLE -> {}
                     MainViewModel.Navigate.CONTENT -> {
-                        Timber.tag("kek").i("content")
                         navGraph.startDestination = R.id.gallery_fragment
                         navController.graph = navGraph
                         return@collectLatest
                     }
                     MainViewModel.Navigate.LOGIN -> {
-                        Timber.tag("kek").i("login")
                         navGraph.startDestination = R.id.login_fragment
                         navController.graph = navGraph
                         return@collectLatest
@@ -60,10 +65,12 @@ class MainActivity : AppCompatActivity() {
 
             override fun onLogin(token: VKAccessToken) {
                 mainViewModel.onLogin()
+                navigateAfterLogin()
             }
 
             override fun onLoginFailed(authException: VKAuthException) {
-               Log.e("kek", authException.authError.toString())
+                toast(this@MainActivity).show()
+                Timber.wtf(authException)
             }
         }
         //SDK API, can not change deprecated
@@ -71,6 +78,25 @@ class MainActivity : AppCompatActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    //Actually is no way to elegant navigate after login, because VK SDK API.
+    private fun navigateAfterLogin() {
+        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
+        kotlin.runCatching {
+            lifecycleScope.launch {
+                delay(DELAY_NAVIGATE)
+                (navHostFragment.childFragmentManager.fragments[0] as? NavigateToContent)?.navigate()
+            }
+        }.onFailure {
+            Timber.wtf(it)
+        }
+    }
+
+    companion object {
+        const val DELAY_NAVIGATE = 200L
+    }
+
+
 
 }
 

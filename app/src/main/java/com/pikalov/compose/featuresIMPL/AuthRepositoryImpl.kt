@@ -24,6 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun logout() {
+        _authState.value = AuthState.NON_AUTHORIZED
         VK.logout()
     }
 

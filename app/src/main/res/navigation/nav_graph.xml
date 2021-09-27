@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@+id/login_fragment">
+
+    <action
+        android:id="@+id/global_to_login"
+        app:destination="@+id/login_fragment" />
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.pikalov.compose.ui.login.LoginFragment">
+        <action
+            android:id="@+id/login_to_gallery"
+            app:destination="@+id/gallery_fragment" />
     </fragment>
     <fragment
         android:id="@+id/gallery_fragment"

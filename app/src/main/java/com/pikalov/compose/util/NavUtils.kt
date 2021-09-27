@@ -10,6 +10,6 @@ fun Fragment.navigateSafe(direction: NavDirections) {
     try {
         findNavController().navigate(direction)
     } catch (e: Exception) {
-        Timber.e(e)
+        Timber.wtf(e)
     }
 }

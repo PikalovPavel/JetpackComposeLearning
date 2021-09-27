@@ -1,5 +1,8 @@
 package com.pikalov.compose.ui.imageDetail
 
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -16,39 +19,60 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberImagePainter
 import com.pikalov.compose.ui.theme.JetpackComposeLearningTheme
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.ImagePainter
+import coil.request.ImageRequest
 import com.pikalov.compose.R
 import com.pikalov.compose.features.Photo
+import com.pikalov.compose.ui.theme.toast
+import timber.log.Timber
+import java.net.URL
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.time.LocalDate
+
+import java.time.format.FormatStyle
+
+import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+
 
 @Composable
-fun ImageDetailContent(state: ImageDetailUiState) {
-    val pattern = "dd MMMMMM yyyy"
-    val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+fun ImageDetailContent(
+    state: ImageDetailUiState,
+    onBackPressed: () -> Unit,
+    onImageClick: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
         TopAppBar(
             title = {
-                Text(text = simpleDateFormat.format(state.currentPhoto.date))
+                Text(text = state.currentPhoto.date.toFormatString())
             },
             navigationIcon = {
                 Image(
                     painter = painterResource(R.drawable.ic_back),
                     contentDescription = null,
                     Modifier.padding(start = 12.dp)
+                        .clickable {
+                            onBackPressed.invoke()
+                        }
                 )
             },
             actions = {
                 Image(
                     painter = painterResource(R.drawable.ic_save),
                     contentDescription = null,
-                    Modifier.padding(end = 12.dp)
+                    Modifier
+                        .padding(end = 12.dp)
                         .clickable {
-                    }
+                            onImageClick.invoke()
+                        }
                 )
             },
             backgroundColor = Color.White
@@ -61,7 +85,8 @@ fun ImageDetailContent(state: ImageDetailUiState) {
     ) {
         MobileUpImage(
             imageId = state.currentPhoto.urlBig,
-            size = LocalConfiguration.current.screenWidthDp
+            size = LocalConfiguration.current.screenWidthDp + 1,
+            LocalContext.current
         )
     }
 
@@ -87,7 +112,8 @@ fun OtherImages(photos: List<Photo>) {
             ) {
                 MobileUpImage(
                     imageId = item.urlSmall,
-                    size = 56
+                    size = 56,
+                    LocalContext.current
                 )
             }
         }
@@ -98,10 +124,21 @@ fun OtherImages(photos: List<Photo>) {
 @Composable
 fun MobileUpImage(
     imageId: String?,
-    size: Int
+    size: Int,
+    context: Context
 ) {
     Image(
-        painter = rememberImagePainter(imageId),
+        painter = rememberImagePainter(
+            data = imageId,
+            builder = {
+                listener(
+                    onError = { _: ImageRequest, throwable: Throwable ->
+                        Timber.wtf(throwable)
+                        toast(context).show()
+                    }
+                )
+            }
+        ),
         contentDescription = null,
         modifier = Modifier
             .width(size.dp)
@@ -110,12 +147,20 @@ fun MobileUpImage(
     )
 }
 
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-@ExperimentalFoundationApi
-fun Gallery() {
-    JetpackComposeLearningTheme {
-
+fun Date.toFormatString(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        DateTimeFormatter.ofPattern("dd MMM yyyy")
+            .withLocale(Locale("ru"))
+            .format(this.toLocalDate())
+    } else {
+        SimpleDateFormat("MMMM dd yyyy", Locale.US)
+            .format(this)
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun Date.toLocalDate(): LocalDate = toInstant()
+    .atZone(ZoneId.systemDefault())
+    .toLocalDate()
+
+
