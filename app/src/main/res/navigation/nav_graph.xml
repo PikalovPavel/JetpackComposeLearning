@@ -25,6 +25,10 @@
     <fragment
         android:id="@+id/image_detail_fragment"
         android:name="com.pikalov.compose.ui.imageDetail.ImageDetailFragment">
+        <action
+            android:id="@+id/image_detail_to_image_detail"
+            app:destination="@+id/image_detail_fragment"
+            app:popUpTo="@+id/gallery_fragment"/>
         <argument
             android:name="currentPhoto"
             app:argType="com.pikalov.compose.features.Photo" />

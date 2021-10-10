@@ -41,7 +41,6 @@ class GalleryViewModel @Inject constructor(
         getPhotos()
     }
 
-    // UI state exposed to the UI
     private val _uiState = MutableStateFlow<Result<GalleryUiState>>(Result.Loading)
     val uiState: StateFlow<Result<GalleryUiState>> = _uiState.asStateFlow()
 

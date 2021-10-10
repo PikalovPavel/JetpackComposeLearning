@@ -75,7 +75,7 @@ class GalleryFragment : Fragment() {
                             navigateSafe(
                                 GalleryFragmentDirections.galleryFragmentToImageDetailFragment(
                                     photo,
-                                    state.data.photos.filterNot { it.id == photo.id }.toPhotos()
+                                    state.data.photos.toPhotos()
                                 )
                             )
                         }

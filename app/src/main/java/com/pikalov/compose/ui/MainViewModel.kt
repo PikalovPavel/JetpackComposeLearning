@@ -1,9 +1,8 @@
-package com.pikalov.compose
+package com.pikalov.compose.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pikalov.compose.features.AuthRepository
-import com.pikalov.compose.features.AuthState
 import com.pikalov.compose.features.AuthState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +22,7 @@ class MainViewModel @Inject constructor(
     // Load data from a suspend fun and mutate state
     init {
         viewModelScope.launch {
-            val state = authRepository.authState.firstOrNull()
-            val navigate = when (state) {
+            val navigate = when (authRepository.authState.firstOrNull()) {
                 AUTHORIZED -> Navigate.CONTENT
                 NON_AUTHORIZED -> Navigate.LOGIN
                 null -> Navigate.IDLE

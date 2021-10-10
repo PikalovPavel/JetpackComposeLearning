@@ -3,7 +3,6 @@ package com.pikalov.compose.ui.imageDetail
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,36 +14,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberImagePainter
-import com.pikalov.compose.ui.theme.JetpackComposeLearningTheme
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.ImagePainter
 import coil.request.ImageRequest
 import com.pikalov.compose.R
 import com.pikalov.compose.features.Photo
 import com.pikalov.compose.ui.theme.toast
+import com.pikalov.compose.util.toFormatString
 import timber.log.Timber
-import java.net.URL
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-import java.time.LocalDate
-
-import java.time.format.FormatStyle
-
-import java.time.format.DateTimeFormatter
-import java.time.ZoneId
 
 
 @Composable
 fun ImageDetailContent(
     state: ImageDetailUiState,
     onBackPressed: () -> Unit,
-    onImageClick: () -> Unit
+    onShareClick: () -> Unit,
+    onSmallImageClick: (imageId: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -66,12 +54,12 @@ fun ImageDetailContent(
             },
             actions = {
                 Image(
-                    painter = painterResource(R.drawable.ic_save),
+                    painter = painterResource(R.drawable.ic_share),
                     contentDescription = null,
                     Modifier
                         .padding(end = 12.dp)
                         .clickable {
-                            onImageClick.invoke()
+                            onShareClick.invoke()
                         }
                 )
             },
@@ -84,7 +72,8 @@ fun ImageDetailContent(
         verticalArrangement = Arrangement.Center
     ) {
         MobileUpImage(
-            imageId = state.currentPhoto.urlBig,
+            id = state.currentPhoto.id,
+            imageUrl = state.currentPhoto.urlBig,
             size = LocalConfiguration.current.screenWidthDp + 1,
             LocalContext.current
         )
@@ -93,15 +82,16 @@ fun ImageDetailContent(
     Column(
         verticalArrangement = Arrangement.Bottom,
     ) {
-        OtherImages(state.otherPhotos)
+        OtherImages(state.otherPhotos, onSmallImageClick)
     }
-
-
 }
 
 
 @Composable
-fun OtherImages(photos: List<Photo>) {
+fun OtherImages(
+    photos: List<Photo>,
+    onSmallImageClick: (imageId: Int) -> Unit
+) {
     LazyRow() {
         itemsIndexed(photos) { index, item ->
             Box(
@@ -111,9 +101,11 @@ fun OtherImages(photos: List<Photo>) {
                 )
             ) {
                 MobileUpImage(
-                    imageId = item.urlSmall,
+                    id = item.id,
+                    imageUrl = item.urlSmall,
                     size = 56,
-                    LocalContext.current
+                    LocalContext.current,
+                    imageClicker = onSmallImageClick
                 )
             }
         }
@@ -123,13 +115,21 @@ fun OtherImages(photos: List<Photo>) {
 
 @Composable
 fun MobileUpImage(
-    imageId: String?,
+    id: Int,
+    imageUrl: String?,
     size: Int,
-    context: Context
+    context: Context,
+    imageClicker: ((imageId: Int) -> Unit)? = null
 ) {
+    var modifier = Modifier
+        .width(size.dp)
+        .height(size.dp)
+    if (imageClicker != null) {
+        modifier = modifier.clickable { imageClicker.invoke(id) }
+    }
     Image(
         painter = rememberImagePainter(
-            data = imageId,
+            data = imageUrl,
             builder = {
                 listener(
                     onError = { _: ImageRequest, throwable: Throwable ->
@@ -140,27 +140,10 @@ fun MobileUpImage(
             }
         ),
         contentDescription = null,
-        modifier = Modifier
-            .width(size.dp)
-            .height(size.dp),
+        modifier = modifier,
         contentScale = ContentScale.Crop,
     )
 }
 
-fun Date.toFormatString(): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        DateTimeFormatter.ofPattern("dd MMM yyyy")
-            .withLocale(Locale("ru"))
-            .format(this.toLocalDate())
-    } else {
-        SimpleDateFormat("MMMM dd yyyy", Locale.US)
-            .format(this)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun Date.toLocalDate(): LocalDate = toInstant()
-    .atZone(ZoneId.systemDefault())
-    .toLocalDate()
 
 

@@ -1,18 +1,13 @@
-package com.pikalov.compose
+package com.pikalov.compose.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.pikalov.compose.features.AuthRepository
-import com.pikalov.compose.ui.login.LoginViewModel
+import com.pikalov.compose.R
 import com.pikalov.compose.ui.login.NavigateToContent
-import com.pikalov.compose.ui.theme.toast
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
@@ -22,9 +17,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
-
-
 
 
 @AndroidEntryPoint
@@ -69,7 +61,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onLoginFailed(authException: VKAuthException) {
-                toast(this@MainActivity).show()
                 Timber.wtf(authException)
             }
         }
