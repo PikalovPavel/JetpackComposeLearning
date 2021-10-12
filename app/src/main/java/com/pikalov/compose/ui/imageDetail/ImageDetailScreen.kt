@@ -1,18 +1,18 @@
 package com.pikalov.compose.ui.imageDetail
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberImagePainter
 import androidx.compose.ui.platform.LocalConfiguration
@@ -34,22 +34,26 @@ fun ImageDetailContent(
     onShareClick: () -> Unit,
     onSmallImageClick: (imageId: Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+    Box(
+        modifier = Modifier.background(MaterialTheme.colors.secondary)
     ) {
         TopAppBar(
             title = {
-                Text(text = state.currentPhoto.date.toFormatString())
+                Text(
+                    text = state.currentPhoto.date.toFormatString(),
+                    color = MaterialTheme.colors.primary
+                )
             },
             navigationIcon = {
                 Image(
                     painter = painterResource(R.drawable.ic_back),
                     contentDescription = null,
-                    Modifier.padding(start = 12.dp)
+                    Modifier
+                        .padding(start = 12.dp)
                         .clickable {
                             onBackPressed.invoke()
-                        }
+                        },
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                 )
             },
             actions = {
@@ -60,29 +64,26 @@ fun ImageDetailContent(
                         .padding(end = 12.dp)
                         .clickable {
                             onShareClick.invoke()
-                        }
+                        },
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                 )
             },
-            backgroundColor = Color.White
+            backgroundColor = MaterialTheme.colors.secondary
         )
-    }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        MobileUpImage(
-            id = state.currentPhoto.id,
-            imageUrl = state.currentPhoto.urlBig,
-            size = LocalConfiguration.current.screenWidthDp + 1,
-            LocalContext.current
-        )
-    }
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            MobileUpImage(
+                id = state.currentPhoto.id,
+                imageUrl = state.currentPhoto.urlBig,
+                size = LocalConfiguration.current.screenWidthDp + 1,
+                LocalContext.current
+            )
+        }
 
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-    ) {
-        OtherImages(state.otherPhotos, onSmallImageClick)
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            OtherImages(state.otherPhotos, onSmallImageClick)
+        }
     }
 }
 

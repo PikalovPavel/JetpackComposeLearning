@@ -1,5 +1,6 @@
 package com.pikalov.compose.ui.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -17,44 +18,40 @@ import com.pikalov.compose.ui.theme.JetpackComposeLearningTheme
 
 @Composable
 fun LoginContent(onLoginClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(64.dp))
-        Text(
-            text = stringResource(id = R.string.app_title),
-            style = MaterialTheme.typography.h1,
-            modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth()
-        )
-    }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { onLoginClick.invoke() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-                .clip(RoundedCornerShape(8.dp))
-
+    Box(modifier = Modifier.background(MaterialTheme.colors.secondary)) {
+        Box(
+            modifier = Modifier.align(Alignment.TopCenter)
+                .padding(top = 64.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.login),
-                modifier = Modifier.padding(10.dp)
+                text = stringResource(id = R.string.app_title),
+                style = MaterialTheme.typography.h1,
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colors.primary
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
-    }
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+        ) {
+            Button(
+                onClick = { onLoginClick.invoke() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colors.primary)
 
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun Login() {
-    JetpackComposeLearningTheme {
-        LoginContent({})
+            ) {
+                Text(
+                    text = stringResource(id = R.string.login),
+                    modifier = Modifier
+                        .padding(10.dp),
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
     }
 }

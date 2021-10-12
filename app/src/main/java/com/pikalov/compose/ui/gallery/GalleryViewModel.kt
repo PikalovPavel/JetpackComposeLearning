@@ -1,12 +1,11 @@
 package com.pikalov.compose.ui.gallery
 
-import android.app.Activity
-import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pikalov.compose.features.AuthRepository
 import com.pikalov.compose.features.GalleryRepository
 import com.pikalov.compose.features.Photo
+import com.pikalov.compose.features.ThemeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +16,6 @@ import com.pikalov.compose.util.Result
 import com.vk.sdk.api.photos.dto.PhotosPhotoSizesType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-import timber.log.Timber
 import java.util.*
 
 
@@ -34,7 +31,8 @@ data class GalleryUiState(
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
     private val galleryRepository: GalleryRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
     init {
@@ -46,6 +44,12 @@ class GalleryViewModel @Inject constructor(
 
     fun logout() {
         authRepository.logout()
+    }
+
+    fun changeTheme() {
+        viewModelScope.launch {
+            themeRepository.switchTheme()
+        }
     }
 
     private fun getPhotos() {

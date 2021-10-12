@@ -1,23 +1,24 @@
 package com.pikalov.compose.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import com.pikalov.compose.features.ThemeRepository
+import com.pikalov.compose.features.ThemeRepository.Theme.*
+import timber.log.Timber
 
+//TODO(color usage by material guidelines)
 private val DarkColorPalette = darkColors(
-    primary = Black12,
+    primary = White,
     primaryVariant = Purple700,
-    secondary = Teal200,
+    secondary = Black12,
 )
 
 private val LightColorPalette = lightColors(
     primary = Black12,
     primaryVariant = Purple700,
-    secondary = Teal200,
-
+    secondary = White,
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,
@@ -30,15 +31,13 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun JetpackComposeLearningTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: ThemeRepository.Theme,
     content: @Composable() () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+    val colors = when(theme) {
+        LIGHT -> LightColorPalette
+        DARK -> DarkColorPalette
     }
-
     MaterialTheme(
         colors = colors,
         typography = Typography,
